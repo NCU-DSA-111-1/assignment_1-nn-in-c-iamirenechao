@@ -1,6 +1,6 @@
-#include "backprop.h"
-#include "layer.h"
-#include "neuron.h"
+#include "../inc/backprop.h"
+#include "../inc/layer.h"
+#include "../inc/neuron.h"
 
 
 layer *lay = NULL;
@@ -13,6 +13,9 @@ float **input;
 float **desired_outputs;
 int num_training_ex;
 int n=1;
+double add=0.0;
+
+FILE *fp = NULL;
 
 int main(void)
 {
@@ -226,6 +229,9 @@ void train_neural_net(void)
     int it=0;
 
     // Gradient Descent
+
+    fp = fopen("error.csv","w");
+
     for(it=0;it<20000;it++)
     {
         for(i=0;i<num_training_ex;i++)
@@ -236,7 +242,10 @@ void train_neural_net(void)
             back_prop(i);
             update_weights();
         }
+        compute_MSE(add,it);
     }
+
+    fclose(fp);
 }
 
 
@@ -308,16 +317,19 @@ void compute_cost(int i)
     float tmpcost=0;
     float tcost=0;
 
+
     for(j=0;j<num_neurons[num_layers-1];j++)
     {
         tmpcost = desired_outputs[i][j] - lay[num_layers-1].neu[j].actv;
         cost[j] = (tmpcost * tmpcost)/2;
         tcost = tcost + cost[j];
+        add += tmpcost*tmpcost;
     }   
 
     full_cost = (full_cost + tcost)/n;
     n++;
-    // printf("Full Cost: %f\n",full_cost);
+    // printf("Full Cost: %f\n",full_cost); //
+
 }
 
 // Back Propogate Error
@@ -393,4 +405,13 @@ int dinit(void)
     // Free up all the structures
 
     return SUCCESS_DINIT;
+}
+
+void compute_MSE(double a, int n){
+    double mse = a/(4*(n+1));
+    printf("MSE: %lf\n",mse);
+    // loss function, MSE
+    
+    fprintf(fp,"%lf,%d\n",mse,n);
+    
 }

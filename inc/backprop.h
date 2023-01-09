@@ -27,6 +27,7 @@ void feed_input(int i);
 void train_neural_net(void);
 void forward_prop(void);
 void compute_cost(int i);
+void compute_MSE(double a, int n);
 void back_prop(int p);
 void update_weights(void);
 void get_inputs(void);

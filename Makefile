@@ -1,16 +1,19 @@
 LDFLAGS = -pthread -lpthread
 CFLAGS = -g -Wall -Werror
 backprop: backprop.o layer.o neuron.o
-	$(CC) $(LDFLAGS) -o backprop main.o layer.o neuron.o -lm
+	$(CC) $(LDFLAGS) -o bin/backprop build/main.o build/layer.o build/neuron.o -lm
 
-backprop.o: main.c
-	$(CC) $(CFLAGS) -c main.c
+backprop.o: src/main.c
+	$(CC) $(CFLAGS) -c src/main.c -o build/main.o
 
-layer.o: layer.c
-	$(CC) $(CFLAGS) -c layer.c
+layer.o: src/layer.c
+	$(CC) $(CFLAGS) -c src/layer.c -o build/layer.o
 
-neuron.o: neuron.c
-	$(CC) $(CFLAGS) -c neuron.c
+neuron.o: src/neuron.c
+	$(CC) $(CFLAGS) -c src/neuron.c -o build/neuron.object
+
+run:
+	./bin/backprop
 
 # remove object files and executable when user executes "make clean"
 clean:
